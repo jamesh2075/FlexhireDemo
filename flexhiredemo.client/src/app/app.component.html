@@ -1,0 +1,97 @@
+<!-- W3Schools & FontAwesome 4 -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Tab Buttons -->
+<div class="w3-bar w3-border">
+  <button class="w3-bar-item w3-button" [class.w3-light-grey]="activeTab === 'profile'" (click)="switchTab('profile')">
+    <i class="fa fa-user"></i> Profile
+  </button>
+  <button class="w3-bar-item w3-button" [class.w3-light-grey]="activeTab === 'jobs'" (click)="switchTab('jobs')">
+    <i class="fa fa-briefcase"></i> Jobs
+  </button>
+  <button class="w3-bar-item w3-button" [class.w3-light-grey]="activeTab === 'tools'" (click)="switchTab('tools')">
+    <i class="fa fa-wrench"></i> Tools
+  </button>
+  <img src="https://images.flexhire.com/images/logos/flexhhire-logo-black.png" style="float:right; height:20px; padding:5px" />
+</div>
+
+
+
+<!-- Profile Tab -->
+<div *ngIf="activeTab === 'profile'" class="w3-container w3-margin-top">
+  <div class="w3-row">
+    <!-- Left Column: Profile Info -->
+    <div class="w3-col l4 m4 s12">
+      <h2>{{ profile?.name }}</h2>
+      <img [src]="profile?.avatarUrl" alt="Avatar" width="100" *ngIf="profile?.avatarUrl">
+      <p><strong>Industry:</strong> {{ profile?.industry }}</p>
+
+      <h3>Skills & Experience</h3>
+      <ul class="w3-ul">
+        <li *ngFor="let skill of profile?.skills">
+          {{ skill.skill.name }} - {{ skill.experience }} years
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right Column: Videos -->
+    <div class="w3-col l8 m8 s12" *ngIf="profile.answers?.length > 0">
+      <h3>Video Answers</h3>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <div *ngFor="let video of profile.answers.slice(0, 3)" style="flex: 1 1 45%;">
+          <video width="100%" controls *ngIf="video">
+            <source [src]="video" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Jobs Tab -->
+<div *ngIf="activeTab === 'jobs'" class="w3-container w3-margin-top">
+  <h2>Job Applications</h2>
+  <div class="job-container">
+    <div *ngFor="let job of jobs" class="job-item">
+      <p><strong>{{ job.job.title }}</strong></p>
+      <p>Status: {{ job.status }}</p>
+      <p>Hiring Manager: {{ job.client.name }} | Company: {{ job.firm.name }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Tools Tab -->
+<div *ngIf="activeTab === 'tools'" class="w3-container w3-margin-top">
+  <h2>Tools</h2>
+
+  <!-- (1) API Key Input + Apply -->
+  <div class="w3-section">
+    <label for="apiKey">API Key:</label>
+    <input id="apiKey"
+           type="text"
+           [(ngModel)]="apiKeyInput"
+           class="w3-input w3-border w3-margin-bottom"
+           placeholder="Enter new API key" />
+    <button class="w3-button w3-blue" (click)="applyApiKey()">
+      <i class="fa fa-floppy-o"></i> Apply API Key
+    </button>
+  </div>
+
+  <!-- (2) Register Webhook -->
+  <div class="w3-section">
+    <button class="w3-button w3-green" (click)="registerWebhook()">
+      <i class="fa fa-plug"></i> Register Webhook with Flexhire
+    </button>
+  </div>
+
+  <!-- (3) Simulate Webhook Callback -->
+  <div class="w3-section">
+    <button class="w3-button w3-orange" (click)="simulateWebhook()">
+      <i class="fa fa-globe"></i> Simulate Webhook Callback
+    </button>
+  </div>
+</div>
+

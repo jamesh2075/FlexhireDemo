@@ -1,0 +1,6 @@
+@FlexhireDemo.Server_HostAddress = http://localhost:5173
+
+GET {{FlexhireDemo.Server_HostAddress}}/api/profile/
+Accept: application/json
+
+###

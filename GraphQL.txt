@@ -1,0 +1,51 @@
+
+  # Welcome to the Flexhire API Playground
+  # Queries will run with the permissions of your currentUser
+  # Remember that if you are on production, running mutations will affect the production data
+  {
+    currentUser {
+      name
+      profile {
+        industry {
+          name
+        }
+      }
+      avatarUrl
+      userSkills {
+        skill {
+          name
+        }
+        experience
+      }
+    	answers {
+        id
+      }
+      jobApplications(first: 20) {
+    	  edges {
+    	    node {
+            status
+            job {
+              title
+            }
+            client {
+             	name
+            }
+            firm {
+              name
+            }
+            contractRequests {
+              question {
+                title
+                videoAnswer {
+                  video {
+                    videoType
+                    url
+                  }
+                }
+              }
+            }
+    	    }
+    	  }
+    	}
+    }
+  }

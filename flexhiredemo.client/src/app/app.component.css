@@ -1,0 +1,24 @@
+.w3-bar-item {
+  cursor: pointer;
+}
+.job-container {
+  display: flex;
+  flex-wrap: wrap; /* This ensures the items wrap to the next row when needed */
+  gap: 1rem; /* Adds spacing between items */
+}
+
+.job-item {
+  flex: 1 1 calc(33% - 1rem); /* Take 1/3 of the container width, minus the gap */
+  box-sizing: border-box; /* Ensures padding and margins don’t break the layout */
+  padding: 1rem;
+  background-color: #fff; /* Card-like background */
+  border: 1px solid #ddd; /* Light border for the job items */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow for better visual separation */
+  display: flex;
+  flex-direction: column; /* Stack content vertically within the job item */
+}
+
+  .job-item p {
+    margin: 0.5rem 0; /* Adds spacing between paragraphs */
+  }
