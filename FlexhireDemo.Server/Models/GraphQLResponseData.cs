@@ -1,5 +1,6 @@
 ﻿using GraphQL;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
 namespace FlexhireDemo.Server.Models
@@ -114,31 +115,19 @@ namespace FlexhireDemo.Server.Models
         public Video video { get; set; }
     }
 
-    public class CreateWebhookInput
-    {
-        public string clientMutationId { get; set; }
-        public bool enabled { get; set; } = true;
-        public string url { get; set; }
-    }
-
-    public class CreateWebhookVariables
-    {
-        public CreateWebhookInput input { get; set; }
-    }
-
-    public class CreateWebhookRequest
-    {
-        public string query { get; set; }
-        public CreateWebhookVariables variables { get; set; }
-    }
-
     public class CreateWebhookResponse
     {
         [JsonProperty("createWebhook")]
-        public CreateWebhookPayload CreateWebhook { get; set; }
+        public WebhookRegistrationPayload CreateWebhook { get; set; }
     }
 
-    public class CreateWebhookPayload
+    public class DeleteWebhookResponse
+    {
+        [JsonProperty("deleteWebhook")]
+        public WebhookRegistrationPayload DeleteWebhook { get; set; }
+    }
+
+    public class WebhookRegistrationPayload
     {
         [JsonProperty("clientMutationId")]
         public string ClientMutationId { get; set; }
@@ -150,12 +139,11 @@ namespace FlexhireDemo.Server.Models
         public List<GraphQLError> Errors { get; set; }
     }
 
-    public class DeleteWebhookResponse
-    {
-        [JsonProperty("deleteWebhook")]
-        public CreateWebhookPayload DeleteWebhook { get; set; }
-    }
+    
 
+    /// <summary>
+    /// Represents a webhook that is registered with Flexhire
+    /// </summary>
     public class Webhook
     {
         [JsonProperty("id")]
@@ -172,6 +160,35 @@ namespace FlexhireDemo.Server.Models
     {
         [JsonProperty("message")]
         public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the webhook payload that is sent from Flexhire
+    /// </summary>
+    public class FlexhireWebhookPayload
+    {
+        [JsonProperty("event_name")]
+        public string EventName { get; set; }
+
+        [JsonProperty("timestamp")]
+        public long Timestamp { get; set; }
+
+        [JsonProperty("records")]
+        public List<string> Records { get; set; }
+    }
+    public class WebhookHub : Hub
+    {
+        public override Task OnConnectedAsync()
+        {
+            Console.WriteLine($"Client connected: {Context.ConnectionId}");
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            Console.WriteLine($"Client disconnected: {Context.ConnectionId}");
+            return base.OnDisconnectedAsync(exception);
+        }
     }
 
 }

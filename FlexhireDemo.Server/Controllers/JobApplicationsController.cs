@@ -13,7 +13,7 @@ namespace FlexhireDemo.Server.Controllers
             _graphQLService = graphQLService;
         }
 
-        [HttpGet("{limit}")]
+        [HttpGet("{limit?}")]
         public async Task<IActionResult> GetJobApplications(int limit=100)
         {
             var response = await _graphQLService.GetCurrentUserDataAsync();

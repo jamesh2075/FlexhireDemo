@@ -14,8 +14,11 @@ export class FlexhireDemoService {
     return this.http.get(`${this.baseUrl}/profile`);
   }
 
-  getJobApplications(limit:number|null): Observable<any> {
-    return this.http.get(`${this.baseUrl}/jobapplications/${limit}`);
+  getJobApplications(limit: number | null): Observable<any> {
+    const url = limit != null
+      ? `${this.baseUrl}/jobapplications/${limit}`
+      : `${this.baseUrl}/jobapplications`;
+    return this.http.get(url);
   }
 
   updateApiKey(apiKey: string): Observable<any> {

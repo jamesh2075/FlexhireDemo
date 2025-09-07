@@ -1,3 +1,5 @@
+using FlexhireDemo.Server.Models;
+
 namespace FlexhireDemo.Server
 {
     public class Program
@@ -9,6 +11,7 @@ namespace FlexhireDemo.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddSignalR();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: corsPolicyName,
@@ -17,7 +20,8 @@ namespace FlexhireDemo.Server
                         policy.WithOrigins("http://localhost:4200", 
                                            "https://localhost:4200")
                               .AllowAnyHeader()
-                              .AllowAnyMethod();
+                              .AllowAnyMethod()
+                              .AllowCredentials();
                     });
             });
             builder.Services.AddSingleton<FlexhireApiKeyProvider>();
@@ -33,11 +37,13 @@ namespace FlexhireDemo.Server
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
-
+            app.UseRouting();
             app.UseAuthorization();
 
 
             app.MapControllers();
+
+            app.MapHub<WebhookHub>("/webhookHub");
 
             app.MapFallbackToFile("/index.html");
 

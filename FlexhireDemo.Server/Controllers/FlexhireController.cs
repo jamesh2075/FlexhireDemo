@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FlexhireDemo.Server.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Net.Http.Headers;
 
 namespace FlexhireDemo.Server.Controllers
@@ -9,11 +11,18 @@ namespace FlexhireDemo.Server.Controllers
     {
         private readonly FlexhireApiKeyProvider _apiKeyProvider;
         private readonly GraphQLService _graphQLService;
+        private readonly IHubContext<WebhookHub> _hubContext;
 
-        public FlexhireController(FlexhireApiKeyProvider apiKeyProvider, GraphQLService graphQLService)
+        public FlexhireController(FlexhireApiKeyProvider apiKeyProvider, GraphQLService graphQLService, IHubContext<WebhookHub> hubContext)
         {
             _apiKeyProvider = apiKeyProvider;
             _graphQLService = graphQLService;
+            _hubContext = hubContext;
+        }
+
+        public class ApiKeyModel
+        {
+            public string ApiKey { get; set; }
         }
 
         [HttpPost("apikey")]
@@ -24,7 +33,6 @@ namespace FlexhireDemo.Server.Controllers
 
             _apiKeyProvider.ApiKey = model.ApiKey;
 
-            // Optionally: store securely, e.g., in-memory cache, secrets manager, etc.
             return Ok();
         }
 
@@ -51,29 +59,24 @@ namespace FlexhireDemo.Server.Controllers
         }
 
         [HttpPost("simulate-webhook")]
-        public IActionResult SimulateWebhook()
+        public async Task<IActionResult> SimulateWebhook()
         {
             // Trigger a fake webhook callback (usually used for testing)
-            var fakePayload = new
+
+            FlexhireWebhookPayload fakePayload = new FlexhireWebhookPayload
             {
-                evt = "candidate.updated",
-                data = new { id = 123, name = "John Doe" }
+                EventName = "fake-web-hook",
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Records = [ "dXNlcnMtMTA1OA==" ]
             };
-
-            // You would typically call your own webhook handler:
-            return RedirectToAction("HandleWebhook", "Flexhire", new { payload = fakePayload });
-        }
-
-        public class ApiKeyModel
-        {
-            public string ApiKey { get; set; }
+            return await HandleWebhook(fakePayload);
         }
 
         [HttpPost]
-        public IActionResult HandleWebhook([FromBody] dynamic payload)
+        public async Task<IActionResult> HandleWebhook([FromBody] FlexhireWebhookPayload payload)
         {
             // Process the incoming webhook event
-            Console.WriteLine($"Received webhook: {payload}");
+            await _hubContext.Clients.All.SendAsync("WebhookReceived", payload);
 
             return Ok();
         }

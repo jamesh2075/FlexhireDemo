@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FlexhireDemoService } from '../flexhiredemo.service';
-
+import { WebhookSignalrService } from '../signarlr.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,11 +19,25 @@ export class AppComponent implements OnInit {
   selectedLimit: number = 10;
   webhookId: any = "";
 
-  constructor(private flexhireDemoService: FlexhireDemoService) { }
+  constructor(
+    private flexhireDemoService: FlexhireDemoService,
+    private webhookSignalrService: WebhookSignalrService)
+  {
+  }
 
   ngOnInit(): void {
     this.getProfile();
     this.getJobs();
+
+    this.webhookSignalrService.startConnection();
+    // Subscribe to webhook events and reload jobs on event
+    this.webhookSignalrService.webhookReceived$.subscribe((payload) => {
+      if (payload) {
+        console.log('Reloading due to webhook...');
+        this.getProfile();
+        this.getJobs();
+      }
+    });
   }
 
   getProfile(): void {
