@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from './environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlexhireDemoService {
-  private baseUrl = 'http://localhost:5173/api';
+  private baseUrl = environment.apiBaseUrl + '/api';
 
   constructor(private http: HttpClient) { }
 
