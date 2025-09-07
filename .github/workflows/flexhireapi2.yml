@@ -56,6 +56,6 @@ jobs:
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        app-name: flexhireapi
         publish-profile: ${{ secrets.flexhireapi_BEFA }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
