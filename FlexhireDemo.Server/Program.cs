@@ -40,7 +40,6 @@ namespace FlexhireDemo.Server
             app.UseRouting();
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.MapHub<WebhookHub>("/webhookHub");
