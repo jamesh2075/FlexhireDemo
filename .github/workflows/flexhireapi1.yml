@@ -14,6 +14,18 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install Angular dependencies
+      run: npm install
+      working-directory: FlexhireDemo.Client
+
+    - name: Build Angular app
+      run: npm run build -- --configuration production
+      working-directory: FlexhireDemo.Client
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
