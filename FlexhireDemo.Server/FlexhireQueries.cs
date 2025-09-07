@@ -25,15 +25,24 @@
                       }
                     }
                 }
-                jobApplications(first: 20) {
+                webhooks {
+                      id
+                      url
+                      enabled
+                    }
+                jobApplications(first: 100) {
                     edges {
                         node {
                             status
                             job {
                                 title
+                                freelancerRate {
+                                  formatted
+                                }
                             }
                             client {
                                 name
+                                email
                             }
                             firm {
                                 name
@@ -52,15 +61,19 @@
                         }
                     }
                 }
-                freelancerJobApplications(first: 20) {
+                freelancerJobApplications(first: 100) {
                     edges {
                         node {
                             status
                             job {
                                 title
+                                freelancerRate {
+                                  formatted
+                                }
                             }
                             client {
                                 name
+                                email
                             }
                             firm {
                                 name
@@ -81,6 +94,36 @@
                 }
             }
         }";
+
+        public const string CreateWebhookQuery = @"
+            mutation CreateWebhook($input: CreateWebhookInput!) {
+              createWebhook(input: $input) {
+                clientMutationId
+                webhook {
+                  id
+                  url
+                  enabled
+                }
+                errors {
+                  message
+                }
+              }
+            }";
+
+        public const string DeleteWebhookQuery = @"
+            mutation DeleteWebhook($input: DeleteWebhookInput!) {
+              deleteWebhook(input: $input) {
+                clientMutationId
+                webhook {
+                  id
+                  url
+                  enabled
+                }
+                errors {
+                  message
+                }
+              }
+            }";
     }
 
 }

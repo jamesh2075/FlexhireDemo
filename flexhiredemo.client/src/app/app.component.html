@@ -16,8 +16,6 @@
   <img src="https://images.flexhire.com/images/logos/flexhhire-logo-black.png" style="float:right; height:20px; padding:5px" />
 </div>
 
-
-
 <!-- Profile Tab -->
 <div *ngIf="activeTab === 'profile'" class="w3-container w3-margin-top">
   <div class="w3-row">
@@ -53,12 +51,26 @@
 
 <!-- Jobs Tab -->
 <div *ngIf="activeTab === 'jobs'" class="w3-container w3-margin-top">
-  <h2>Job Applications</h2>
+  <div class="header-row">
+    <h2 class="header-title">Job Applications</h2>
+    <div class="record-selector">
+      <label for="recordLimit" class="w3-margin-right">Count:</label>
+      <select id="recordLimit"
+              [(ngModel)]="selectedLimit"
+              (change)="onLimitChange()"
+              class="w3-select w3-border">
+        <option *ngFor="let option of limitOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
   <div class="job-container">
     <div *ngFor="let job of jobs" class="job-item">
-      <p><strong>{{ job.job.title }}</strong></p>
+      <p><strong>{{ job.job.title }} | {{ job.job.freelancerRate.formatted }} </strong></p>
       <p>Status: {{ job.status }}</p>
       <p>Hiring Manager: {{ job.client.name }} | Company: {{ job.firm.name }}</p>
+      <p>Email: {{ job.client.email }}</p>
     </div>
   </div>
 </div>
@@ -67,7 +79,7 @@
 <div *ngIf="activeTab === 'tools'" class="w3-container w3-margin-top">
   <h2>Tools</h2>
 
-  <!-- (1) API Key Input + Apply -->
+  <!-- API Key Input + Apply -->
   <div class="w3-section">
     <label for="apiKey">API Key:</label>
     <input id="apiKey"
@@ -75,19 +87,33 @@
            [(ngModel)]="apiKeyInput"
            class="w3-input w3-border w3-margin-bottom"
            placeholder="Enter new API key" />
-    <button class="w3-button w3-blue" (click)="applyApiKey()">
+    <button class="w3-button w3-blue" (click)="applyApiKey()"
+            [disabled]="!apiKeyInput">
       <i class="fa fa-floppy-o"></i> Apply API Key
     </button>
   </div>
 
-  <!-- (2) Register Webhook -->
+  <!-- Register Webhook -->
   <div class="w3-section">
-    <button class="w3-button w3-green" (click)="registerWebhook()">
+    <button class="w3-button w3-green" (click)="registerWebhook()"
+            [disabled]="webhookId">
       <i class="fa fa-plug"></i> Register Webhook with Flexhire
     </button>
   </div>
 
-  <!-- (3) Simulate Webhook Callback -->
+  <div *ngIf="webhookId" class="w3-section">
+    <p><strong>Registered Webhook ID:</strong> {{ webhookId }}</p>
+  </div>
+
+  <!-- Delete Webhook -->
+  <div class="w3-section" *ngIf="webhookId">
+    <button class="w3-button w3-red" (click)="unregisterWebhook()"
+            [disabled]="!webhookId">
+      <i class="fa fa-trash"></i> Delete Webhook
+    </button>
+  </div>
+
+  <!-- Simulate Webhook Callback -->
   <div class="w3-section">
     <button class="w3-button w3-orange" (click)="simulateWebhook()">
       <i class="fa fa-globe"></i> Simulate Webhook Callback

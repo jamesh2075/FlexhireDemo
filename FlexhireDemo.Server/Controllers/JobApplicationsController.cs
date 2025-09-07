@@ -13,12 +13,12 @@ namespace FlexhireDemo.Server.Controllers
             _graphQLService = graphQLService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetJobApplications()
+        [HttpGet("{limit}")]
+        public async Task<IActionResult> GetJobApplications(int limit=100)
         {
             var response = await _graphQLService.GetCurrentUserDataAsync();
             var jobs = response?.freelancerJobApplications?.edges?
-                  .Select(e => e.node)
+                  .Select(e => e.node).Take(limit)
                   .ToList();
 
             return Ok(jobs);

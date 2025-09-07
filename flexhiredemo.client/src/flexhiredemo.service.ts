@@ -14,8 +14,8 @@ export class FlexhireDemoService {
     return this.http.get(`${this.baseUrl}/profile`);
   }
 
-  getJobApplications(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/jobapplications`);
+  getJobApplications(limit:number|null): Observable<any> {
+    return this.http.get(`${this.baseUrl}/jobapplications/${limit}`);
   }
 
   updateApiKey(apiKey: string): Observable<any> {
@@ -28,6 +28,16 @@ export class FlexhireDemoService {
 
   registerWebhook(): Observable<any> {
     return this.http.post(`${this.baseUrl}/flexhire/register-webhook`, '');
+  }
+
+  unregisterWebhook(webhookId: string): Observable<any> {
+    // Since the web API accepts a string in the body of the request,
+    // the webhookId must be enclosed in quotations.
+    return this.http.post(`${this.baseUrl}/flexhire/unregister-webhook`,
+      JSON.stringify(webhookId), // wrap string in double quotes
+      {
+        headers: { 'Content-Type': 'application/json' }
+      });
   }
 
   simulateWebhook(): Observable<any> {

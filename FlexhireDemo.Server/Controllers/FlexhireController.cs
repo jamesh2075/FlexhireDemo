@@ -8,10 +8,12 @@ namespace FlexhireDemo.Server.Controllers
     public class FlexhireController : ControllerBase
     {
         private readonly FlexhireApiKeyProvider _apiKeyProvider;
+        private readonly GraphQLService _graphQLService;
 
-        public FlexhireController(FlexhireApiKeyProvider apiKeyProvider)
+        public FlexhireController(FlexhireApiKeyProvider apiKeyProvider, GraphQLService graphQLService)
         {
             _apiKeyProvider = apiKeyProvider;
+            _graphQLService = graphQLService;
         }
 
         [HttpPost("apikey")]
@@ -29,18 +31,23 @@ namespace FlexhireDemo.Server.Controllers
         [HttpPost("register-webhook")]
         public async Task<IActionResult> RegisterWebhook()
         {
-            // Use _apiKey to call Flexhire's webhook registration endpoint
-            // Example pseudocode:
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKeyProvider.ApiKey);
+            var webHook = await _graphQLService.RegisterWebhookAsync();
 
-            var payload = new { url = "https://yourapp.com/api/webhook/flexhire" };
-            var response = await client.PostAsJsonAsync("https://api.flexhire.com/webhooks", payload);
+            if (webHook.Enabled)
+                return Ok(webHook);
+            else
+                return BadRequest("The webhook could not be registered.");
+        }
 
-            if (!response.IsSuccessStatusCode)
-                return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+        [HttpPost("unregister-webhook")]
+        public async Task<IActionResult> UnregisterWebhook([FromBody] string webhookId)
+        {
+            var webHook = await _graphQLService.UnregisterWebhookAsync(webhookId);
 
-            return Ok();
+            if (webHook.Enabled)
+                return Ok(webHook);
+            else
+                return BadRequest("The webhook could not be unregistered.");
         }
 
         [HttpPost("simulate-webhook")]

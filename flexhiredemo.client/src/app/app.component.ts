@@ -10,6 +10,14 @@ export class AppComponent implements OnInit {
   activeTab: string = 'profile';
   profile: any = null;
   jobs: any[] = [];
+  limitOptions = [
+    { label: '10', value: 10 },
+    { label: '25', value: 25 },
+    { label: '50', value: 50 },
+    { label: 'All', value: 100 }
+  ];
+  selectedLimit: number = 10;
+  webhookId: any = "";
 
   constructor(private flexhireDemoService: FlexhireDemoService) { }
 
@@ -21,17 +29,24 @@ export class AppComponent implements OnInit {
   getProfile(): void {
     this.flexhireDemoService.getProfile().subscribe(data => {
       this.profile = data;
+      this.webhookId = this.profile?.webhookId;
+      sessionStorage.setItem("webhookId", this.profile?.webhookId);
     });
   }
 
   getJobs(): void {
-    this.flexhireDemoService.getJobApplications().subscribe(data => {
+    const limit = this.selectedLimit === 100 ? null : this.selectedLimit;
+    this.flexhireDemoService.getJobApplications(limit).subscribe(data => {
       this.jobs = data;
     });
   }
 
   switchTab(tabName: string): void {
     this.activeTab = tabName;
+  }
+
+  onLimitChange() {
+    this.getJobs();
   }
 
   apiKeyInput: string = '';
@@ -53,8 +68,22 @@ export class AppComponent implements OnInit {
 
   registerWebhook() {
     this.flexhireDemoService.registerWebhook().subscribe({
-      next: () => alert('Webhook registered with Flexhire.'),
+      next: (webhook) => {
+        this.webhookId = webhook.id;
+        sessionStorage.setItem("webhookId", webhook.id);
+        alert(`Webhook ${webhook.id} registered with Flexhire.`);
+      },
       error: err => alert('Webhook registration failed: ' + err.message)
+    });
+  }
+
+  unregisterWebhook() {
+    this.flexhireDemoService.unregisterWebhook(this.webhookId).subscribe({
+      next: (webhook) => {
+        this.webhookId = "";
+        alert(`Webhook ${webhook.id} unregistered with Flexhire.`);
+      },
+      error: err => alert('Webhook de-registration failed: ' + err.message)
     });
   }
 

@@ -26,7 +26,8 @@ namespace FlexhireDemo.Server.Controllers
                 avatarUrl = profile?.avatarUrl,
                 industry = profile?.profile?.industry?.name,
                 skills = profile?.userSkills,
-                answers = profile?.answers.Select(a => a.answer?.video?.url).ToArray()
+                answers = profile?.answers.Select(a => a.answer?.video?.url).ToArray(),
+                webhookId = profile?.webhooks?.FirstOrDefault()?.Id
             });
         }
     }
