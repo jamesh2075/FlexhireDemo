@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "20146950-8b4cabb7-6c26-4989-8f53-b6e3ed5b55d6",
+		"name": "Flexhire (Web API)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetProfile",
+			"id": "20146950-2223da20-69f3-4e47-b45e-6db7ed866040",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer l6ld9ikji9x0j2a2",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "FLEXHIRE-API-KEY",
+						"value": "l6ld9ikji9x0j2a2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://flexhireapi.azurewebsites.net/api/profile",
+					"protocol": "https",
+					"host": [
+						"flexhireapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetJobs",
+			"id": "20146950-f173ee62-e9dd-4f17-9d72-d7b1bcd319cf",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer l6ld9ikji9x0j2a2",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "FLEXHIRE-API-KEY",
+						"value": "l6ld9ikji9x0j2a2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://flexhireapi.azurewebsites.net/api/profile",
+					"protocol": "https",
+					"host": [
+						"flexhireapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ca1cfe43-7e3c-4a19-a8c8-8caf9893475f",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3348412d-c474-43fc-9bde-c7e8069baa32",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		},
+		{
+			"key": "api_key",
+			"value": ""
+		},
+		{
+			"key": "bearer_token",
+			"value": ""
+		},
+		{
+			"key": "flexhire_api_key_header",
+			"value": ""
+		}
+	]
+}
