@@ -86,6 +86,18 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "SimulateWebHook",
+			"id": "20146950-2e638bc3-95e8-400c-96b3-13132118cc1d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	],
 	"event": [
