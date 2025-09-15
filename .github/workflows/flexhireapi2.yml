@@ -1,70 +1,78 @@
 name: Build and deploy .NET Core application to Web App flexhireapi
+
 on:
   push:
     branches:
-    - master
+      - master
+
 env:
   AZURE_WEBAPP_NAME: flexhireapi
-  AZURE_WEBAPP_PACKAGE_PATH: FlexhireDemo.Server\published
+  AZURE_WEBAPP_PACKAGE_PATH: FlexhireDemo.Server/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: FlexhireDemo.Server
+
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v4
-  
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install Angular dependencies
-      run: npm install
-      working-directory: FlexhireDemo.Client
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Build Angular app
-      run: npm run build -- --configuration production
-      working-directory: FlexhireDemo.Client
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-    - name: Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-    - name: Test
-      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-    - name: Copy Angular build to wwwroot/browser
-      shell: pwsh
-      run: |
-        if (Test-Path "FlexhireDemo.Server/wwwroot/browser") {
-          Remove-Item -Recurse -Force "FlexhireDemo.Server/wwwroot/browser"
-        }
-        New-Item -ItemType Directory -Path "FlexhireDemo.Server/wwwroot/browser" | Out-Null
-        Copy-Item -Recurse -Force "FlexhireDemo.Client/dist/flexhiredemo.client/*" "FlexhireDemo.Server/wwwroot/browser/"
-    
+      - name: 📦 Install Angular dependencies
+        run: npm install
+        working-directory: FlexhireDemo.Client
 
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      - name: 🏗️ Build Angular app
+        run: |
+          npm run build -- --configuration production --output-path=../FlexhireDemo.Server/wwwroot/browser
+        working-directory: FlexhireDemo.Client
+
+      - name: 🧰 Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
+      - name: 📥 Restore .NET dependencies
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
+      - name: 🛠️ Build .NET app
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
+
+      - name: 🧪 Run tests
+        run: dotnet test ${{ env.WORKING_DIRECTORY }} --no-build
+
+      - name: 📦 Publish .NET app
+        run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: 📂 List published files (debug)
+        run: dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /s
+
+      - name: ⬆️ Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
   deploy:
     runs-on: windows-latest
     needs: build
+    if: success()  # Only run if build succeeds
+
     steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v4
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: flexhireapi
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: FlexhireDemo.Server/published
+      - name: 📥 Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: 🚀 Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.
