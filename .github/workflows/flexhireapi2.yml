@@ -37,8 +37,14 @@ jobs:
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-    - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Copy Angular build to wwwroot/browser
+      run: |
+        if exist FlexhireDemo.Server\wwwroot\browser (
+          rmdir /s /q FlexhireDemo.Server\wwwroot\browser
+        )
+        mkdir FlexhireDemo.Server\wwwroot\browser
+        xcopy /s /e /y FlexhireDemo.Client\dist\flexhiredemo.client\* FlexhireDemo.Server\wwwroot\browser\
+
     - name: Publish Artifacts
       uses: actions/upload-artifact@v4
       with:
