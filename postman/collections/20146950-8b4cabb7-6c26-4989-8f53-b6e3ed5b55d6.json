@@ -94,8 +94,21 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5173/api/flexhire/simulate-webhook",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5173",
+					"path": [
+						"api",
+						"flexhire",
+						"simulate-webhook"
+					]
+				}
 			},
 			"response": []
 		}
