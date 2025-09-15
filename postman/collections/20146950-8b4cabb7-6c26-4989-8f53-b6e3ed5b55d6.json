@@ -72,7 +72,7 @@
 					}
 				],
 				"url": {
-					"raw": "https://flexhireapi.azurewebsites.net/api/profile",
+					"raw": "https://flexhireapi.azurewebsites.net/api/jobApplications",
 					"protocol": "https",
 					"host": [
 						"flexhireapi",
@@ -81,7 +81,7 @@
 					],
 					"path": [
 						"api",
-						"profile"
+						"jobApplications"
 					]
 				}
 			},
@@ -107,6 +107,34 @@
 						"api",
 						"flexhire",
 						"simulate-webhook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://flexhireapi.azurewebsites.net/api/profile",
+			"id": "20146950-579ab536-8237-4c62-8a06-1a25d0c54c14",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://flexhireapi.azurewebsites.net/api/profile",
+					"protocol": "https",
+					"host": [
+						"flexhireapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"profile"
 					]
 				}
 			},
