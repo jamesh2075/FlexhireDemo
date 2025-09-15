@@ -38,12 +38,14 @@ jobs:
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
     - name: Copy Angular build to wwwroot/browser
+      shell: pwsh
       run: |
-        if exist FlexhireDemo.Server\wwwroot\browser (
-          rmdir /s /q FlexhireDemo.Server\wwwroot\browser
-        )
-        mkdir FlexhireDemo.Server\wwwroot\browser
-        xcopy /s /e /y FlexhireDemo.Client\dist\flexhiredemo.client\* FlexhireDemo.Server\wwwroot\browser\
+        if (Test-Path "FlexhireDemo.Server/wwwroot/browser") {
+          Remove-Item -Recurse -Force "FlexhireDemo.Server/wwwroot/browser"
+        }
+        New-Item -ItemType Directory -Path "FlexhireDemo.Server/wwwroot/browser" | Out-Null
+        Copy-Item -Recurse -Force "FlexhireDemo.Client/dist/flexhiredemo.client/*" "FlexhireDemo.Server/wwwroot/browser/"
+    
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v4
