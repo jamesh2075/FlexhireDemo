@@ -34,7 +34,9 @@ jobs:
         working-directory: FlexhireDemo.Client
 
       - name: Verify Angular build output
-        run: dir FlexhireDemo.Server\wwwroot\browser /s
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path FlexhireDemo.Server\wwwroot\browser -Recurse
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
@@ -77,3 +79,4 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
