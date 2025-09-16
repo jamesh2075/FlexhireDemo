@@ -33,6 +33,9 @@ jobs:
           npm run build -- --configuration production --output-path=../FlexhireDemo.Server/wwwroot/browser
         working-directory: FlexhireDemo.Client
 
+      - name: Verify Angular build output
+        run: dir FlexhireDemo.Server\wwwroot\browser /s
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
