@@ -28,6 +28,11 @@ jobs:
         run: npm ci
         working-directory: FlexhireDemo.Client
 
+      - name: Clean browser folder
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue FlexhireDemo.Server\wwwroot\browser
+
       - name: Build Angular app
         run: |
           npm run build -- --configuration production --output-path=../FlexhireDemo.Server/wwwroot/browser
@@ -79,4 +84,3 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
