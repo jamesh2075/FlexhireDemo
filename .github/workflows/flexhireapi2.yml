@@ -25,7 +25,7 @@ jobs:
           node-version: '20'
 
       - name: Install Angular dependencies
-        run: npm install
+        run: npm ci
         working-directory: FlexhireDemo.Client
 
       - name: Build Angular app
