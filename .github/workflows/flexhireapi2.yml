@@ -17,44 +17,40 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: 📦 Install Angular dependencies
+      - name: Install Angular dependencies
         run: npm install
         working-directory: FlexhireDemo.Client
 
-      - name: 🏗️ Build Angular app
+      - name: Build Angular app
         run: |
           npm run build -- --configuration production --output-path=../FlexhireDemo.Server/wwwroot/browser
         working-directory: FlexhireDemo.Client
 
-      - name: 🧰 Setup .NET SDK
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
-      - name: 📥 Restore .NET dependencies
+      - name: Restore
         run: dotnet restore ${{ env.WORKING_DIRECTORY }}
 
-      - name: 🛠️ Build .NET app
+      - name: Build
         run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
 
-      - name: 🧪 Run tests
+      - name: Test
         run: dotnet test ${{ env.WORKING_DIRECTORY }} --no-build
 
-      - name: 📦 Publish .NET app
+      - name: Publish
         run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      - name: 📂 List published files (debug)
-        run: dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} /s
-
-      - name: ⬆️ Upload artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: webapp
@@ -63,16 +59,18 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
-    if: success()  # Only run if build succeeds
+    if: success()
 
     steps:
-      - name: 📥 Download artifact from build job
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: webapp
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      - name: 🚀 Deploy to Azure WebApp
+      - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
